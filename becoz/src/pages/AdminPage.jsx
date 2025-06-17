@@ -20,6 +20,9 @@ export default function AdminPanel() {
         img_collection: images,
     });
     const [submitting, setSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState(false);
+    const [submitSuccess, setSubmitSuccess] = useState(false);
+    const [resetUploadImage, setResetUploadImage] = useState(0);
 
 
     const handleChange = (e) => {
@@ -29,11 +32,12 @@ export default function AdminPanel() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            setSubmitError(false);
+            setSubmitSuccess(false);
             setSubmitting(true);
             const featuresArray = formData.features.split(',').map(f => f.trim());
             const payload = { ...formData, features: featuresArray };
             await api.post(`${BackendUrl}/addProperty`, payload);
-            alert('Property added successfully!');
             setFormData({
                 title: '',
                 description: '',
@@ -44,8 +48,10 @@ export default function AdminPanel() {
                 main_img: '',
                 img_collection: images,
             });
+            setResetUploadImage(prev => prev + 1); // Reset image upload components
+            setSubmitSuccess(true);
         } catch (err) {
-            alert('Error adding property.');
+            setSubmitError(true);
             console.error(err);
         } finally {
             setSubmitting(false);
@@ -53,95 +59,109 @@ export default function AdminPanel() {
     };
     //  py-20
     return (
-            <section className="min-h-screen bg-[#111] pt-[72px] text-white font-[Poppins] px-6">
-                <div className="max-w-3xl mt-5 mx-auto bg-[#1A1A1A] p-8 rounded-xl border border-[#FFCB74]/20 shadow-lg">
-                    <h2 className="text-3xl font-bold text-[#FFCB74] mb-8 text-center">Admin Panel: Add Property</h2>
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        <div>
-                            <label className="block text-sm mb-2">Title</label>
-                            <input
-                                type="text"
-                                name="title"
-                                value={formData.title}
-                                onChange={handleChange}
-                                className="w-full bg-[#111] border border-[#FFCB74]/30 px-4 py-2 rounded-md text-white"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm mb-2">Type</label>
-                            <select
-                                name="type"
-                                value={formData.type}
-                                onChange={handleChange}
-                                className="w-full bg-[#111] border border-[#FFCB74]/30 px-4 py-2 rounded-md text-[#FFCB74]"
-                            >
-                                <option value="sale">For Sale</option>
-                                <option value="rent">For Rent</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label className="block text-sm mb-2">price (ETB)</label>
-                            <input
-                                type="number"
-                                name="price"
-                                value={formData.price}
-                                onChange={handleChange}
-                                className="w-full bg-[#111] border border-[#FFCB74]/30 px-4 py-2 rounded-md text-white"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm mb-2">Features (comma separated)</label>
-                            <input
-                                type="text"
-                                name="features"
-                                value={formData.features}
-                                onChange={handleChange}
-                                className="w-full bg-[#111] border border-[#FFCB74]/30 px-4 py-2 rounded-md text-white"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm mb-2">Address</label>
-                            <input
-                                type="text"
-                                name="address"
-                                value={formData.address}
-                                onChange={handleChange}
-                                className="w-full bg-[#111] border border-[#FFCB74]/30 px-4 py-2 rounded-md text-white"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm mb-2">Description</label>
-                            <textarea
-                                rows="5"
-                                name="description"
-                                value={formData.description}
-                                onChange={handleChange}
-                                className="w-full bg-[#111] border border-[#FFCB74]/30 px-4 py-2 rounded-md text-white"
-                                required>
-
-                            </textarea>
-                        </div>
-                        <UploadSingleImage setImageUrl={(url) => setFormData({ ...formData, main_img: url })} />
-                        <UploadMultipleImages setImageUrls={(urls) => setFormData({ ...formData, img_collection: urls })} />
-                        <button
-                            disabled={submitting}
-                            type="submit"
-                            className="w-full bg-gradient-to-r from-[#FFCB74] to-[#ffb55d] text-black font-bold py-2 rounded-full hover:scale-105 transition duration-300"
+        <section className="min-h-screen bg-[#111] pt-[72px] text-white font-[Poppins] px-6">
+            <div className="max-w-3xl mt-5 mx-auto bg-[#1A1A1A] p-8 rounded-xl border border-[#FFCB74]/20 shadow-lg">
+                <h2 className="text-3xl font-bold text-[#FFCB74] mb-8 text-center">Admin Panel: Add Property</h2>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                        <label className="block text-sm mb-2">Title</label>
+                        <input
+                            type="text"
+                            name="title"
+                            value={formData.title}
+                            onChange={handleChange}
+                            className="w-full bg-[#111] border border-[#FFCB74]/30 px-4 py-2 rounded-md text-white"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm mb-2">Type</label>
+                        <select
+                            name="type"
+                            value={formData.type}
+                            onChange={handleChange}
+                            className="w-full bg-[#111] border border-[#FFCB74]/30 px-4 py-2 rounded-md text-[#FFCB74]"
                         >
-                            {submitting ? 'Submitting...' : 'Submit Property'}
-                        </button>
-                    </form>
-                </div>
+                            <option value="sale">For Sale</option>
+                            <option value="rent">For Rent</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block text-sm mb-2">price (ETB)</label>
+                        <input
+                            type="number"
+                            name="price"
+                            value={formData.price}
+                            onChange={handleChange}
+                            className="w-full bg-[#111] border border-[#FFCB74]/30 px-4 py-2 rounded-md text-white"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm mb-2">Features (comma separated)</label>
+                        <input
+                            type="text"
+                            name="features"
+                            value={formData.features}
+                            onChange={handleChange}
+                            className="w-full bg-[#111] border border-[#FFCB74]/30 px-4 py-2 rounded-md text-white"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm mb-2">Address</label>
+                        <input
+                            type="text"
+                            name="address"
+                            value={formData.address}
+                            onChange={handleChange}
+                            className="w-full bg-[#111] border border-[#FFCB74]/30 px-4 py-2 rounded-md text-white"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm mb-2">Description</label>
+                        <textarea
+                            rows="5"
+                            name="description"
+                            value={formData.description}
+                            onChange={handleChange}
+                            className="w-full bg-[#111] border border-[#FFCB74]/30 px-4 py-2 rounded-md text-white"
+                            required>
 
-                {/* Add Feedback Section */}
-                <AddFeedback />
+                        </textarea>
+                    </div>
+                    <UploadSingleImage setImageUrl={(url) => setFormData({ ...formData, main_img: url })} resetTrigger={resetUploadImage} />
+                    <UploadMultipleImages setImageUrls={(urls) => setFormData({ ...formData, img_collection: urls })} resetTrigger={resetUploadImage} />
 
-                {/* Manage Properties Section */}
-                <ManageProperties />
-            </section>
+                    {submitError && (
+                        <p className="text-red-500 text-md mt-2">
+                            Error submitting property. Please try again.
+                        </p>
+                    )}
+
+                    {submitSuccess && (
+                        <p className="text-green-500 text-md mt-2">
+                            Property submitted successfully!
+                        </p>
+                    )}
+
+
+                    <button
+                        disabled={submitting}
+                        type="submit"
+                        className="w-full bg-gradient-to-r from-[#FFCB74] to-[#ffb55d] text-black font-bold py-2 rounded-full hover:scale-105 transition duration-300"
+                    >
+                        {submitting ? 'Submitting...' : 'Submit Property'}
+                    </button>
+                </form>
+            </div>
+
+            {/* Add Feedback Section */}
+            <AddFeedback />
+
+            {/* Manage Properties Section */}
+            <ManageProperties />
+        </section>
     );
 }

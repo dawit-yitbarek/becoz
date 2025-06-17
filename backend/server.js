@@ -34,6 +34,7 @@ const pool = new Pool({
   },
 });
 
+// database connection
 pool.connect((err) => {
   if (err) {
     console.error('Failed to connect to the database:', err);
@@ -42,10 +43,15 @@ pool.connect((err) => {
   }
 });
 
+// Middleware to handle CORS
 app.use(cors({
   origin: [process.env.FRONTEND_URL],
   credentials: true
 }));
+
+// Handle preflight OPTIONS requests
+app.options('*', cors());
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());

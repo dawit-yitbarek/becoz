@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import api from './Api';
 
 const BackendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -14,10 +14,10 @@ export default function UploadSingleImage(props) {
     const file = e.target.files[0];
 
     if (!file) {
-    setPreview(null);
-    setUploadSuccess(false);
-    return;
-  }
+      setPreview(null);
+      setUploadSuccess(false);
+      return;
+    }
 
     setPreview(URL.createObjectURL(file)); // Show preview
     const formData = new FormData();
@@ -37,11 +37,19 @@ export default function UploadSingleImage(props) {
       setUploadSuccess(false);
       setUploadError(true);
       console.error('Error uploading image:', error);
-    }finally {
+    } finally {
       setUploading(false);
     }
 
   };
+
+  useEffect(() => {
+    setPreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''; // ✅ This resets the <input type="file" />
+    }
+
+  }, [props.resetTrigger]);
 
   return (
     <div className="flex flex-col gap-2 mb-6">

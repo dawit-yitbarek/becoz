@@ -1,9 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import api from '../components/Api';
 
 const BackendUrl = import.meta.env.VITE_BACKEND_URL;
 
-export default function UploadMultipleImages({ setImageUrls }) {
+export default function UploadMultipleImages({ setImageUrls, resetTrigger }) {
     const [previews, setPreviews] = useState([]);
     const [uploading, setUploading] = useState(false);
     const [uploadSuccess, setUploadSuccess] = useState(false);
@@ -44,6 +44,15 @@ export default function UploadMultipleImages({ setImageUrls }) {
             setUploading(false);
         }
     };
+
+
+    useEffect(() => {
+        setPreviews(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = ''; // ✅ This resets the <input type="file" />
+        }
+
+    }, [resetTrigger])
 
 
     return (
