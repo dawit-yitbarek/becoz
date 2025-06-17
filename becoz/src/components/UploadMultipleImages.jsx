@@ -47,6 +47,8 @@ export default function UploadMultipleImages({ setImageUrls, resetTrigger }) {
 
 
     useEffect(() => {
+        setUploadError(false);
+        setUploadSuccess(false);
         setPreviews(null);
         if (fileInputRef.current) {
             fileInputRef.current.value = ''; // ✅ This resets the <input type="file" />

@@ -44,6 +44,8 @@ export default function UploadSingleImage(props) {
   };
 
   useEffect(() => {
+    setUploadError(false);
+    setUploadSuccess(false);
     setPreview(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = ''; // ✅ This resets the <input type="file" />
