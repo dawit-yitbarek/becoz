@@ -4,15 +4,18 @@ const BackendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export default function DeletePropertyModal({ property, onClose, refresh }) {
     const [deleting, setDeleting] = useState(false);
+    const [deleteError, setDeleteError] = useState(false);
 
     const handleDelete = async () => {
 
         try {
+            setDeleteError(false);
             setDeleting(true);
             await api.delete(`${BackendUrl}/deleteProperty`, { params: { id: property.id } });
             refresh();
             onClose();
         } catch (err) {
+            setDeleteError(true);
             console.error('Error deleting property:', err);
         }finally {
             setDeleting(false);
@@ -26,6 +29,13 @@ export default function DeletePropertyModal({ property, onClose, refresh }) {
                 <p className="mb-6">
                     Are you sure you want to delete <strong>{property?.title}</strong>?
                 </p>
+
+                {deleteError && (
+                    <p className="text-red-500 mb-3">
+                        Failed to delete the property. Please try again.
+                    </p>
+                )}
+
                 <div className="flex justify-end gap-4">
                     <button
                         onClick={onClose}
