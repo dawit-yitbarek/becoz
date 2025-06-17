@@ -14,7 +14,7 @@ export default function Home() {
       <div className='pt-[72px]'>
         <section className="relative h-[90vh] w-full overflow-hidden">
           <img
-            src="/img/hero.jpg"
+            src="/img/hero.webp"
             alt="Luxury house"
             className="absolute inset-0 w-full h-full object-cover z-0"
           />
