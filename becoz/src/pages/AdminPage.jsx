@@ -23,6 +23,7 @@ export default function AdminPanel() {
     const [submitError, setSubmitError] = useState(false);
     const [submitSuccess, setSubmitSuccess] = useState(false);
     const [resetUploadImage, setResetUploadImage] = useState(0);
+    const [refreshPropety, setRefreshPropety] = useState(0);
 
 
     const handleChange = (e) => {
@@ -50,6 +51,7 @@ export default function AdminPanel() {
             });
             setResetUploadImage(prev => prev + 1); // Reset image upload components
             setSubmitSuccess(true);
+            setRefreshPropety(prev => prev + 1); // Trigger refresh for ManageProperties
         } catch (err) {
             setSubmitError(true);
             console.error(err);
@@ -161,7 +163,7 @@ export default function AdminPanel() {
             <AddFeedback />
 
             {/* Manage Properties Section */}
-            <ManageProperties />
+            <ManageProperties refreshOnAddProperty={refreshPropety}/>
         </section>
     );
 }

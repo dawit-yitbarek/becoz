@@ -7,7 +7,7 @@ import ChangeAdminPassword from './ChangeAdminPassword';
 import AddFeedback from './AddFeedback';
 const BackendUrl = import.meta.env.VITE_BACKEND_URL;
 
-export default function ManageProperties() {
+export default function ManageProperties({ refreshOnAddProperty }) {
   const navigate = useNavigate();
   const [properties, setProperties] = useState([]);
   const [selectedProperty, setSelectedProperty] = useState(null);
@@ -27,7 +27,7 @@ export default function ManageProperties() {
     };
 
     fetchProperties();
-  }, [refreshFlag]);
+  }, [refreshFlag, refreshOnAddProperty]);
 
   const handlePropertyDeleted = (id) => {
     setProperties((prev) => prev.filter((p) => p.id !== id));
