@@ -1,31 +1,39 @@
-import React, { useState } from "react";
-import { useParams } from 'react-router-dom'
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from 'react-router-dom'
+import { } from 'react-router-dom';
 import { motion, AnimatePresence } from "framer-motion";
-
-const images = [
-    "/img/listing1.jpg",
-    "/img/listing2.jpg",
-    "/img/listing3.jpg",
-];
-
+import api from '../components/Api';
+const BackendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export default function DetailsPage() {
     const [index, setIndex] = useState(0);
-    const { id } = useParams()
-    const property = {
-        id,
-        title: 'Modern Luxury Villa',
-        image: '/img/listing1.jpg',
-        price: '$1,200,000',
-        location: 'Bole, Addis Ababa',
-        description:
-            `This stunning modern villa features 4 bedrooms, 3 bathrooms, a private pool, and smart home technology.`,
-        features: ['4 Bedrooms', '3 Bathrooms', 'Private Pool', '2-Car Garage', 'Smart Home'],
-        status: 'For Sale',
-    }
+    const location = useLocation()
+    const [propertyDetails, setPropertyDetails] = useState({
+        img_collection: [],
+        features: [],
+    });
+    const navigate = useNavigate();
 
-    const next = () => setIndex((prev) => (prev + 1) % images.length);
-    const prev = () => setIndex((prev) => (prev - 1 + images.length) % images.length);
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const id = queryParams.get('id');
+        const fetchPropertyDetails = async () => {
+            try {
+                const response = await api.get(`${BackendUrl}/getPropertyDetail`, { params: { id } });
+                setPropertyDetails(response.data);
+            } catch (error) {
+                console.error("Error fetching property details:", error);
+            }
+        };
+        fetchPropertyDetails();
+    }, [])
+
+    const navigateToContact = () => {
+        navigate('/contact')
+    };
+
+    const next = () => setIndex((prev) => (prev + 1) % propertyDetails.img_collection.length);
+    const prev = () => setIndex((prev) => (prev - 1 + propertyDetails.img_collection.length) % propertyDetails.img_collection.length);
 
     return (
         <section className="bg-[#111] text-[#A0A0A0] font-[Poppins] py-30 px-6">
@@ -35,7 +43,7 @@ export default function DetailsPage() {
                     <AnimatePresence mode="wait">
                         <motion.img
                             key={index}
-                            src={images[index]}
+                            src={propertyDetails.img_collection[index]}
                             alt={`House image ${index + 1}`}
                             initial={{ opacity: 0.3, x: 30 }}
                             animate={{ opacity: 1, x: 0 }}
@@ -64,17 +72,20 @@ export default function DetailsPage() {
                 {/* Text Info */}
                 <div>
                     <div className="mb-4 text-[#FFCB74] uppercase text-sm font-semibold">
-                        {property.status}
+                        For {propertyDetails.type}
                     </div>
-                    <h1 className="text-4xl font-bold text-white mb-4">{property.title}</h1>
-                    <p className="text-xl font-semibold text-[#FFCB74] mb-2">{property.price}</p>
-                    <p className="mb-6 text-sm text-[#C0C0C0]">{property.location}</p>
-                    <p className="mb-6 text-[#B0B0B0] leading-relaxed">{property.description}</p>
+                    <h1 className="text-4xl font-bold text-white mb-4">{propertyDetails.title}</h1>
+                    <p className="text-xl font-semibold text-[#FFCB74] mb-2">
+                        {Number(propertyDetails.price).toLocaleString()}{propertyDetails.type === 'rent' ? '/month' : ''}
+                        <span className="text-[#FFFFFF] font-semibold text-md tracking-wide uppercase"> ETB </span>
+                    </p>
+                    <p className="mb-6 text-sm text-[#C0C0C0]">{propertyDetails.address}</p>
+                    <p className="mb-6 text-[#B0B0B0] leading-relaxed">{propertyDetails.description}</p>
 
                     <div className="mb-8">
                         <h3 className="text-lg font-semibold text-white mb-3">Features:</h3>
                         <ul className="grid grid-cols-2 gap-2 text-sm text-[#D0D0D0]">
-                            {property.features.map((feature, i) => (
+                            {propertyDetails.features.map((feature, i) => (
                                 <li key={i} className="flex items-center gap-2">
                                     <span className="w-2 h-2 rounded-full bg-[#FFCB74] inline-block" />
                                     {feature}
@@ -85,7 +96,9 @@ export default function DetailsPage() {
 
 
 
-                    <button className="bg-[#FFCB74] text-[#111] px-6 py-2 rounded font-semibold hover:shadow-[0_0_15px_rgba(255,203,116,0.5)] transition">
+                    <button
+                        onClick={navigateToContact}
+                        className="bg-[#FFCB74] text-[#111] px-6 py-2 rounded font-semibold hover:shadow-[0_0_15px_rgba(255,203,116,0.5)] transition">
                         Contact Agent
                     </button>
                 </div>

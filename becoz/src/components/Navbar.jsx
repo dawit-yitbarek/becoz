@@ -6,12 +6,14 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-[#1B1B1B] text-[#F6F6F6] shadow-[0_4px_10px_rgba(0,0,0,0.4)] border-b border-[#2F2F2F] fixed top-0 left-0 w-full z-50 font-[Poppins]">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <nav className="h-[72px] bg-[#1B1B1B] text-[#F6F6F6] shadow-[0_4px_10px_rgba(0,0,0,0.4)] border-b border-[#2F2F2F] fixed top-0 left-0 w-full z-50 font-[Poppins]">
+      <div className="max-w-7xl mx-auto px-6 h-full flex justify-between items-center">
         {/* Logo */}
-        <Link to="/" className="text-2xl font-bold text-[#FFCB74]">
-          Becoz Rentals
+        <Link to="/" className="flex items-center">
+          <img src="/logo/becoz.svg" alt="Becoz Logo" className="h-25 md:h-25 object-contain" />
         </Link>
+
+
 
         {/* Desktop Nav */}
         <ul className="hidden md:flex space-x-8 items-center">

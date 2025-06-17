@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function Footer (){
+function Footer() {
 
     return (
         <footer className="bg-[#0D0D0D] text-[#DCDCDC] pt-16 pb-10 px-6 font-[Poppins] border-t border-[#FFCB74]/20">
@@ -20,7 +20,6 @@ function Footer (){
                     <ul className="space-y-2 text-sm">
                         <li><Link to="/" className="hover:text-[#FFCB74] transition">Home</Link></li>
                         <li><Link to="/listings" className="hover:text-[#FFCB74] transition">Listings</Link></li>
-                        <li><Link to="/about" className="hover:text-[#FFCB74] transition">About Us</Link></li>
                         <li><Link to="/contact" className="hover:text-[#FFCB74] transition">Contact</Link></li>
                     </ul>
                 </div>
@@ -40,8 +39,12 @@ function Footer (){
                 <div>
                     <h4 className="text-lg font-semibold mb-4 text-white">Get in Touch</h4>
                     <p className="text-sm text-[#A0A0A0] mb-2">Addis Ababa, Ethiopia</p>
-                    <p className="text-sm text-[#A0A0A0] mb-2">Email: info@becoz.et</p>
-                    <p className="text-sm text-[#A0A0A0]">Phone: +251 912 345 678</p>
+                    <p className="text-sm text-[#A0A0A0] mb-2">Email: 
+                        <a href="mailto:becoz@gmail.com" className="hover:underline"> becoz@gmail.com </a>
+                    </p>
+                    <p className="text-sm text-[#A0A0A0]">Phone: 
+                        <a href="tel:+251912345678" className="hover:underline"> +251 912 345 678 </a>
+                    </p>
                 </div>
             </div>
 

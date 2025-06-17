@@ -1,4 +1,5 @@
 import React from 'react';
+import ProtectedAdminRoute from './components/ProtectedAdminRoute';
 import NotFound from './pages/Notfound';
 import Ping from './components/Ping';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
@@ -24,6 +25,7 @@ const App = () => {
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/ping" element={<Ping />} />
                     <Route path="/properties" element={<PropertyDetails />} />
+                    <Route path="/admin" element={<ProtectedAdminRoute />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
                 <Footer />
