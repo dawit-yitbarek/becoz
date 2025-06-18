@@ -22,6 +22,8 @@ export default function FeaturedListing() {
         fetchFeaturedListings();
     }, []);
 
+    const placeholderArray = new Array(3).fill(null);
+
     return (
         <section className="bg-gradient-to-b from-[#111111] to-[#1C1C1C] py-20 px-6 text-[#A0A0A0] font-[Poppins]">
             <div className="max-w-7xl mx-auto">
@@ -67,7 +69,7 @@ export default function FeaturedListing() {
                                 </div>
                             </motion.div>
                         )) :
-                        <SkeletonListing />
+                        placeholderArray.map((_, idx) => <SkeletonListing key={idx} />)
                     }
                 </div>
             </div>

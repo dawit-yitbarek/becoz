@@ -37,6 +37,8 @@ export default function Listings() {
       return 0;
     });
 
+    const placeholderArray = new Array(6).fill(null);
+
   return (
     <div className="pt-[72px]">
       <section className="min-h-screen pb-5 bg-[#111] text-white font-[Poppins]">
@@ -120,7 +122,7 @@ export default function Listings() {
                   </motion.div>
                 ))
                 :
-                <SkeletonListing />
+                placeholderArray.map((_, idx) => <SkeletonListing key={idx} />)
               }
             </div>
           </div>
