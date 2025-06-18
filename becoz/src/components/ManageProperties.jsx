@@ -4,7 +4,7 @@ import api from '../components/Api';
 import EditPropertyModal from './EditPropertyModal';
 import DeletePropertyModal from './DeletePropertyModal';
 import ChangeAdminPassword from './ChangeAdminPassword';
-import AddFeedback from './AddFeedback';
+import { SkeletonAdminProperties } from './SkeletonComponents'
 const BackendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export default function ManageProperties({ refreshOnAddProperty }) {
@@ -52,7 +52,7 @@ export default function ManageProperties({ refreshOnAddProperty }) {
       <h2 className="text-3xl font-bold mb-8 text-[#FFCB74] text-center">Manage Properties</h2>
 
       <div className="grid gap-6">
-        {properties.map((property) => (
+        {properties.length > 0 ? properties.map((property) => (
           <div
             key={property.id}
             className="bg-[#1F1F1F] p-5 rounded-xl border border-[#FFCB74]/20 shadow-lg hover:shadow-[#FFCB74]/10 transition duration-300 flex flex-col sm:flex-row sm:items-center gap-5"
@@ -72,7 +72,7 @@ export default function ManageProperties({ refreshOnAddProperty }) {
               <h3 className="text-xl text-white font-semibold">{property.title}</h3>
               <p className="text-sm text-gray-400">{property.type}</p>
               <p className="text-sm text-[#FFCB74] font-semibold">
-                {Number(property.price).toLocaleString()}{property.type === 'rent' ? '/month' : ''} 
+                {Number(property.price).toLocaleString()}{property.type === 'rent' ? '/month' : ''}
                 <span className="text-[#FFFFFF] font-semibold text-md tracking-wide uppercase"> ETB </span>
               </p>
               <p className="text-sm text-gray-400">{property.address}</p>
@@ -93,7 +93,10 @@ export default function ManageProperties({ refreshOnAddProperty }) {
               </button>
             </div>
           </div>
-        ))}
+        ))
+          :
+          <SkeletonAdminProperties />
+        }
       </div>
 
       {selectedProperty && (

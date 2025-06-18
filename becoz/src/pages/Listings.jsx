@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import api from '../components/Api';
 import { format } from 'date-fns';
 import MainFeatured from '../components/MainFeatured';
+import { SkeletonListing } from '../components/SkeletonComponents';
 
 const BackendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -76,47 +77,51 @@ export default function Listings() {
         <section className="py-20 px-6 bg-[#111]">
           <div className="max-w-7xl mx-auto">
             <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-              {filteredListings.map((listing) => (
-                <motion.div
-                  key={listing.id}
-                  whileHover={{ scale: 1.03 }}
-                  transition={{ duration: 0.3 }}
-                  className="rounded-2xl overflow-hidden shadow-md bg-[#1A1A1A] border border-[#2F2F2F] hover:shadow-[0_0_20px_2px_rgba(255,203,116,0.3)] transition-shadow duration-300"
-                >
-                  <div className="relative">
-                    <img
-                      src={listing.main_img}
-                      alt="house"
-                      className="w-full h-60 object-cover"
-                    />
-                    <div className="absolute bottom-4 right-4 bg-[#FFCB74] text-[#111] text-sm font-semibold px-3 py-1 rounded-full shadow-md capitalize">
-                      For {listing.type}
+              {filteredListings.length > 0 && filteredListings[0]?.title ?
+                filteredListings.map((listing) => (
+                  <motion.div
+                    key={listing.id}
+                    whileHover={{ scale: 1.03 }}
+                    transition={{ duration: 0.3 }}
+                    className="rounded-2xl overflow-hidden shadow-md bg-[#1A1A1A] border border-[#2F2F2F] hover:shadow-[0_0_20px_2px_rgba(255,203,116,0.3)] transition-shadow duration-300"
+                  >
+                    <div className="relative">
+                      <img
+                        src={listing.main_img}
+                        alt="house"
+                        className="w-full h-60 object-cover"
+                      />
+                      <div className="absolute bottom-4 right-4 bg-[#FFCB74] text-[#111] text-sm font-semibold px-3 py-1 rounded-full shadow-md capitalize">
+                        For {listing.type}
+                      </div>
                     </div>
-                  </div>
-                  <div className="p-6 flex flex-col justify-between">
-                    <div>
-                      <h4 className="text-xl font-bold mb-2 text-white">{listing.title}</h4>
-                      <p className="text-sm mb-3 text-[#C0C0C0]">{listing.features.join(", ")}</p>
-                      <p className="text-[#FFCB74] font-semibold mb-4">
-                        {Number(listing.price).toLocaleString()}{listing.type === 'rent' ? '/month' : ''}
-                        <span className="text-[#FFFFFF] font-semibold text-md tracking-wide uppercase"> ETB </span>
-                      </p>
-                      <Link
-                        to={`/properties?id=${listing.id}`}
-                        className="text-[#FFCB74] font-semibold hover:underline transition duration-200"
-                      >
-                        View Details →
-                      </Link>
+                    <div className="p-6 flex flex-col justify-between">
+                      <div>
+                        <h4 className="text-xl font-bold mb-2 text-white">{listing.title}</h4>
+                        <p className="text-sm mb-3 text-[#C0C0C0]">{listing.features.join(", ")}</p>
+                        <p className="text-[#FFCB74] font-semibold mb-4">
+                          {Number(listing.price).toLocaleString()}{listing.type === 'rent' ? '/month' : ''}
+                          <span className="text-[#FFFFFF] font-semibold text-md tracking-wide uppercase"> ETB </span>
+                        </p>
+                        <Link
+                          to={`/properties?id=${listing.id}`}
+                          className="text-[#FFCB74] font-semibold hover:underline transition duration-200"
+                        >
+                          View Details →
+                        </Link>
+                      </div>
+
+                      <div className="text-xs text-[#FFCB74] mt-4 self-end">
+                        {format(new Date(listing.posted_at), 'MMM dd, yyyy')}
+                      </div>
+
                     </div>
 
-                    <div className="text-xs text-[#FFCB74] mt-4 self-end">
-                      {format(new Date(listing.posted_at), 'MMM dd, yyyy')}
-                    </div>
-
-                  </div>
-
-                </motion.div>
-              ))}
+                  </motion.div>
+                ))
+                :
+                <SkeletonListing />
+              }
             </div>
           </div>
         </section>
