@@ -75,6 +75,23 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+const checkAdmin = (req, res, next) => {
+  const token = req.cookies.admin_token;
+  if (!token) {
+    return res.status(401).json({ message: "Access Denied: No token provided" });
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (decoded.role === 'admin') {
+      return next();
+    }
+
+    return res.status(403).json({ message: "Access Denied: Not an admin" });
+  } catch (error) {
+    return res.status(401).json({ message: "Access Denied: Invalid token" });
+  }
+}
+
 
 // Endpoint to send contact messages
 app.post('/sendMessage', async (req, res) => {
@@ -158,7 +175,7 @@ app.get("/getTestimonials", async (req, res) => {
 
 
 // Endpoint to add a new property
-app.post("/addProperty", async (req, res) => {
+app.post("/addProperty", checkAdmin ,async (req, res) => {
   const { title, description, type, price, address, features, main_img, img_collection } = req.body;
 
   try {
@@ -179,7 +196,7 @@ app.post("/addProperty", async (req, res) => {
 
 
 // Endpoint to upload a single image to Cloudinary
-app.post('/upload-single', upload.single('image'), async (req, res) => {
+app.post('/upload-single', checkAdmin , upload.single('image'), async (req, res) => {
   try {
     const stream = cloudinary.uploader.upload_stream(
       { folder: 'Becoz images' },
@@ -199,7 +216,7 @@ app.post('/upload-single', upload.single('image'), async (req, res) => {
 
 
 // Endpoint to upload multiple images to Cloudinary
-app.post('/upload-multiple', upload.array('images'), async (req, res) => {
+app.post('/upload-multiple', checkAdmin , upload.array('images'), async (req, res) => {
   try {
     const uploadPromises = req.files.map(file => {
       return new Promise((resolve, reject) => {
@@ -225,7 +242,7 @@ app.post('/upload-multiple', upload.array('images'), async (req, res) => {
 
 
 // Endpoint to update a property
-app.put("/update-property", async (req, res) => {
+app.put("/update-property", checkAdmin , async (req, res) => {
   const { id } = req.query;
   const { title, description, type, price, address, features, main_img, img_collection } = req.body;
 
@@ -253,7 +270,7 @@ app.put("/update-property", async (req, res) => {
 
 
 // Endpoint to delete a property
-app.delete("/deleteProperty", async (req, res) => {
+app.delete("/deleteProperty", checkAdmin , async (req, res) => {
   const { id } = req.query;
 
   try {
@@ -298,7 +315,7 @@ app.post('/verify-admin', async (req, res) => {
 
 
 // Endpoint to change admin password
-app.post('/change-admin-password', async (req, res) => {
+app.post('/change-admin-password', checkAdmin ,async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
     const AdminPassword = await pool.query("SELECT password FROM admin");
@@ -358,7 +375,7 @@ app.post('/admin-logout', (req, res) => {
 
 
 // Endpoint to add feedback
-app.post('/addFeedback', async (req, res) => {
+app.post('/addFeedback', checkAdmin , async (req, res) => {
   const { name, message } = req.body;
 
   try {
