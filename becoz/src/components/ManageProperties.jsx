@@ -15,19 +15,29 @@ export default function ManageProperties({ refreshOnAddProperty }) {
   const [logoutError, setLogoutError] = useState('');
   const [loading, setLoading] = useState(false);
   const [refreshFlag, setRefreshFlag] = useState(0);
+  const [restartFetch, setRestartFetch] = useState({ retry: 0, retryCount: 0 });
 
   useEffect(() => {
     const fetchProperties = async () => {
       try {
         const res = await api.get('/getProperties');
         setProperties(res.data);
+        setRestartFetch(() => ({ retry: 0, retryCount: 0 }));
       } catch (err) {
         console.error('Error fetching properties:', err);
-      }
+        if (restartFetch.retryCount < 5) {
+          setTimeout(() => {
+            setRestartFetch(prev => ({
+              retry: prev.retry + 1,
+              retryCount: prev.retryCount + 1
+            }));
+          }, 5000);
+        };
+      };
     };
 
     fetchProperties();
-  }, [refreshFlag, refreshOnAddProperty]);
+  }, [refreshFlag, refreshOnAddProperty, restartFetch.retry]);
 
   const handlePropertyDeleted = (id) => {
     setProperties((prev) => prev.filter((p) => p.id !== id));

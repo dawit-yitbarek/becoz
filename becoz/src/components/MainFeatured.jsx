@@ -7,6 +7,7 @@ const BackendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export default function MainFeatured() {
   const [mainFeatured, setMainFeatured] = useState({});
+  const [restartFetch, setRestartFetch] = useState({ retry: 0, retryCount: 0 });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,13 +15,21 @@ export default function MainFeatured() {
       try {
         const response = await api.get(`${BackendUrl}/getFeaturedListing`);
         setMainFeatured(response.data[0]);
-        console.log("response sent", response.data[0]);
+        setRestartFetch(() => ({ retry: 0, retryCount: 0 }));
       } catch (error) {
         console.error("Error fetching featured listings:", error);
-      }
+        if (restartFetch.retryCount < 5) {
+          setTimeout(() => {
+            setRestartFetch(prev => ({
+              retry: prev.retry + 1,
+              retryCount: prev.retryCount + 1
+            }));
+          }, 5000);
+        };
+      };
     };
     fetchFeaturedListings();
-  }, []);
+  }, [restartFetch.retry]);
 
   const navigateToDetails = (id) => {
     navigate(`/properties?id=${id}`);

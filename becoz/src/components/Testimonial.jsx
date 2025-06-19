@@ -10,6 +10,7 @@ export default function TestimonialSection() {
   const [index, setIndex] = useState(0)
   const [direction, setDirection] = useState(1)
   const [isHovered, setIsHovered] = useState(false)
+  const [restartFetch, setRestartFetch] = useState({ retry: 0, retryCount: 0 });
   const timerRef = useRef(null)
 
   const startTimer = () => {
@@ -27,13 +28,22 @@ export default function TestimonialSection() {
       try {
         const response = await api.get(`${BackendUrl}/getTestimonials`)
         setTestimonials(response.data)
+        setRestartFetch(() => ({ retry: 0, retryCount: 0 }));
       } catch (error) {
         console.error('Error fetching testimonials:', error)
+        if (restartFetch.retryCount < 5) {
+          setTimeout(() => {
+            setRestartFetch(prev => ({
+              retry: prev.retry + 1,
+              retryCount: prev.retryCount + 1
+            }));
+          }, 5000);
+        };
       }
     }
 
     fetchTestimonials()
-  }, [])
+  }, [restartFetch.retry])
 
   useEffect(() => {
     if (testimonials.length > 0 && !isHovered) {

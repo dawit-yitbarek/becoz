@@ -12,19 +12,28 @@ export default function Listings() {
   const [allListings, setAllListings] = useState([]);
   const [filterType, setFilterType] = useState('all');
   const [sortOrder, setSortOrder] = useState('default');
+  const [restartFetch, setRestartFetch] = useState({ retry: 0, retryCount: 0 });
 
   useEffect(() => {
     const getProperties = async () => {
       try {
         const response = await api.get(`${BackendUrl}/getProperties`);
         setAllListings(response.data);
-        console.log("response sent", response.data);
+        setRestartFetch(() => ({ retry: 0, retryCount: 0 }));
       } catch (error) {
         console.error("Error fetching properties:", error);
+        if (restartFetch.retryCount < 5) {
+          setTimeout(() => {
+            setRestartFetch(prev => ({
+              retry: prev.retry + 1,
+              retryCount: prev.retryCount + 1
+            }));
+          }, 5000);
+        };
       }
     };
     getProperties();
-  }, []);
+  }, [restartFetch.retry]);
 
 
   const filteredListings = allListings
@@ -37,7 +46,7 @@ export default function Listings() {
       return 0;
     });
 
-    const placeholderArray = new Array(6).fill(null);
+  const placeholderArray = new Array(6).fill(null);
 
   return (
     <div className="pt-[72px]">

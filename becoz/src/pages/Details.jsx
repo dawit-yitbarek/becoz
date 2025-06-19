@@ -14,6 +14,7 @@ export default function DetailsPage() {
         img_collection: [],
         features: [],
     });
+    const [restartFetch, setRestartFetch] = useState({ retry: 0, retryCount: 0 });
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -23,12 +24,21 @@ export default function DetailsPage() {
             try {
                 const response = await api.get(`${BackendUrl}/getPropertyDetail`, { params: { id } });
                 setPropertyDetails(response.data);
+                setRestartFetch(() => ({ retry: 0, retryCount: 0 }));
             } catch (error) {
                 console.error("Error fetching property details:", error);
+                if (restartFetch.retryCount < 5) {
+                    setTimeout(() => {
+                        setRestartFetch(prev => ({
+                            retry: prev.retry + 1,
+                            retryCount: prev.retryCount + 1
+                        }));
+                    }, 5000);
+                };
             }
         };
         fetchPropertyDetails();
-    }, [])
+    }, [restartFetch.retry])
 
     const navigateToContact = () => {
         navigate('/contact')

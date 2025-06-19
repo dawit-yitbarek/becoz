@@ -8,19 +8,29 @@ const BackendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export default function FeaturedListing() {
     const [featuredListings, setFeaturedListings] = useState([]);
+    const [restartFetch, setRestartFetch] = useState({ retry: 0, retryCount: 0 });
 
     useEffect(() => {
         async function fetchFeaturedListings() {
             try {
                 const response = await api.get(`${BackendUrl}/getFeaturedListing`);
                 setFeaturedListings(response.data);
+                setRestartFetch(() => ({ retry: 0, retryCount: 0 }));
             } catch (error) {
                 console.error("Error fetching featured listings:", error);
+                if (restartFetch.retryCount < 6) {
+                    setTimeout(() => {
+                        setRestartFetch(prev => ({
+                            retry: prev.retry + 1,
+                            retryCount: prev.retryCount + 1
+                        }));
+                    }, 5000);
+                }
             }
         }
 
         fetchFeaturedListings();
-    }, []);
+    }, [restartFetch.retry]);
 
     const placeholderArray = new Array(3).fill(null);
 
