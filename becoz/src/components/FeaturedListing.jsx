@@ -35,6 +35,7 @@ export default function FeaturedListing() {
                                 key={i}
                                 whileHover={{ scale: 1.03 }}
                                 transition={{ duration: 0.3 }}
+                                loading="lazy"
                                 className="rounded-2xl overflow-hidden shadow-md bg-[#1A1A1A] border border-[#2F2F2F] hover:shadow-[0_0_20px_2px_rgba(255,203,116,0.3)] transition-shadow duration-300"
                             >
                                 <div className="relative">
@@ -42,6 +43,7 @@ export default function FeaturedListing() {
                                         src={property.main_img}
                                         alt={`House`}
                                         className="w-full h-60 object-cover"
+                                        loading="lazy"
                                     />
                                     <div className="absolute bottom-4 right-4 bg-[#FFCB74] text-[#111] text-sm font-semibold px-3 py-1 rounded-full shadow-md">
                                         For {property.type}

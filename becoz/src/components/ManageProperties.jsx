@@ -62,6 +62,7 @@ export default function ManageProperties({ refreshOnAddProperty }) {
                 <img
                   src={property.main_img}
                   alt="Main"
+                  loading="lazy"
                   className="w-full sm:w-32 h-40 sm:h-24 object-cover rounded-md border border-[#2F2F2F]"
                 />
               )}

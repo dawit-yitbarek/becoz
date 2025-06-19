@@ -34,6 +34,7 @@ export default function MainFeatured() {
           <img
             src={mainFeatured.main_img}
             alt="Featured"
+            loading="lazy"
             className="w-full md:w-1/2 h-64 object-cover rounded-lg"
           />
           <div>

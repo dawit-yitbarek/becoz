@@ -80,7 +80,7 @@ export default function Listings() {
           <div className="max-w-7xl mx-auto">
             <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
               {filteredListings.length > 0 && filteredListings[0]?.title ?
-                filteredListings.map((listing) => (
+                filteredListings.map((listing, idx) => (
                   <motion.div
                     key={listing.id}
                     whileHover={{ scale: 1.03 }}
@@ -92,6 +92,7 @@ export default function Listings() {
                         src={listing.main_img}
                         alt="house"
                         className="w-full h-60 object-cover"
+                        loading={idx > 3 ? "lazy" : "eager"}
                       />
                       <div className="absolute bottom-4 right-4 bg-[#FFCB74] text-[#111] text-sm font-semibold px-3 py-1 rounded-full shadow-md capitalize">
                         For {listing.type}
