@@ -26,6 +26,9 @@ export default function Navbar() {
           <li>
             <Link to="/contact" className="hover:text-[#FFCB74] transition duration-300 font-medium">Contact</Link>
           </li>
+          <li>
+            <Link to="/admin" className="hover:text-[#FFCB74] transition duration-300 font-medium">Admin</Link>
+          </li>
         </ul>
 
         {/* Hamburger Icon */}
@@ -66,6 +69,15 @@ export default function Navbar() {
                 className="hover:text-[#FFCB74] transition font-medium"
               >
                 Contact
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/admin"
+                onClick={() => setMenuOpen(false)}
+                className="hover:text-[#FFCB74] transition font-medium"
+              >
+                Admin
               </Link>
             </li>
           </ul>
