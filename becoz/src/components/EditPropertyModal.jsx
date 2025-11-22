@@ -1,9 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import api from '../components/Api';
 import UploadSingleImage from './UploadSingleImage';
 import UploadMultipleImages from './UploadMultipleImages';
-
-const BackendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export default function EditPropertyModal({ property, onClose, refresh }) {
   const [formData, setFormData] = useState({
@@ -25,10 +23,10 @@ export default function EditPropertyModal({ property, onClose, refresh }) {
     try {
       setUpdateError(false);
       setSaving(true);
-      const res = await api.put(`${BackendUrl}/update-property`, formData, { params: { id } });
+      await api.put(`/api/properties/update-property`, formData, { params: { id } });
       refresh();
     } catch (err) {
-      console.error('Failed to update property:', err);
+      console.error('Failed to update property:', err.message);
     } finally {
       setSaving(false);
     }

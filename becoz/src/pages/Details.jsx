@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from 'react-router-dom'
-import { } from 'react-router-dom';
 import { motion, AnimatePresence } from "framer-motion";
 import api from '../components/Api';
 import { SkeletonDetails } from '../components/SkeletonComponents'
-
-const BackendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export default function DetailsPage() {
     const [index, setIndex] = useState(0);
@@ -22,11 +19,11 @@ export default function DetailsPage() {
         const id = queryParams.get('id');
         const fetchPropertyDetails = async () => {
             try {
-                const response = await api.get(`${BackendUrl}/getPropertyDetail`, { params: { id } });
+                const response = await api.get(`/api/properties/getPropertyDetail`, { params: { id } });
                 setPropertyDetails(response.data);
                 setRestartFetch(() => ({ retry: 0, retryCount: 0 }));
             } catch (error) {
-                console.error("Error fetching property details:", error);
+                console.error("Error fetching property details:", error.message);
                 if (restartFetch.retryCount < 5) {
                     setTimeout(() => {
                         setRestartFetch(prev => ({

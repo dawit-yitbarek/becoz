@@ -5,8 +5,7 @@ import UploadMultipleImages from '../components/UploadMultipleImages';
 import ManageProperties from '../components/ManageProperties';
 import AddFeedback from '../components/AddFeedback';
 
-const BackendUrl = import.meta.env.VITE_BACKEND_URL;
-const images = ['https://images.unsplash.com/photo-1598228723793-52759bba239c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGhvdXNlfGVufDB8fDB8fHww', 'https://media.istockphoto.com/id/2155879397/photo/house-in-a-charming-neighborhood-with-stunning-sidewalk-landscaping.webp?a=1&b=1&s=612x612&w=0&k=20&c=LlqEpFyrJBmSZ8v3CshnYJo9X00p8Y7wGv3mIDNqpZ4=', 'https://media.istockphoto.com/id/2186926540/photo/modern-single-story-house-with-landscaped-yard-at-dusk.webp?a=1&b=1&s=612x612&w=0&k=20&c=2cY2NqkCHhROWAIq0n7oR2wxGkVmAkYo20SYUnd2uEA=', 'https://media.istockphoto.com/id/2175973016/photo/modern-luxury-home-exterior-at-sunset.webp?a=1&b=1&s=612x612&w=0&k=20&c=B2e-gEujpM7UNHX3uMHqvyh_bHC5sHFYfxf0ldEc6R0=']
+const images = ['https://psee.io/8ddj9b', 'https://psee.io/8ddj9e', 'https://psee.io/8ddj9f', 'https://psee.io/8ddj9g']
 
 export default function AdminPanel() {
     const [formData, setFormData] = useState({
@@ -38,7 +37,7 @@ export default function AdminPanel() {
             setSubmitting(true);
             const featuresArray = formData.features.split(',').map(f => f.trim());
             const payload = { ...formData, features: featuresArray };
-            await api.post(`${BackendUrl}/addProperty`, payload);
+            await api.post(`/api/properties/addProperty`, payload);
             setFormData({
                 title: '',
                 description: '',
@@ -49,17 +48,17 @@ export default function AdminPanel() {
                 main_img: '',
                 img_collection: images,
             });
-            setResetUploadImage(prev => prev + 1); // Reset image upload components
+            setResetUploadImage(prev => prev + 1);
             setSubmitSuccess(true);
-            setRefreshPropety(prev => prev + 1); // Trigger refresh for ManageProperties
+            setRefreshPropety(prev => prev + 1);
         } catch (err) {
             setSubmitError(true);
-            console.error(err);
+            console.error(err.message);
         } finally {
             setSubmitting(false);
         }
     };
-    //  py-20
+
     return (
         <section className="min-h-screen bg-[#111] pt-[72px] text-white font-[Poppins] px-6">
             <div className="max-w-3xl mt-5 mx-auto bg-[#1A1A1A] p-8 rounded-xl border border-[#FFCB74]/20 shadow-lg">
@@ -163,7 +162,7 @@ export default function AdminPanel() {
             <AddFeedback />
 
             {/* Manage Properties Section */}
-            <ManageProperties refreshOnAddProperty={refreshPropety}/>
+            <ManageProperties refreshOnAddProperty={refreshPropety} />
         </section>
     );
 }

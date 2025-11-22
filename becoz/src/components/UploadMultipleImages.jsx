@@ -1,8 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import api from '../components/Api';
 
-const BackendUrl = import.meta.env.VITE_BACKEND_URL;
-
 export default function UploadMultipleImages({ setImageUrls, resetTrigger }) {
     const [previews, setPreviews] = useState([]);
     const [uploading, setUploading] = useState(false);
@@ -28,16 +26,16 @@ export default function UploadMultipleImages({ setImageUrls, resetTrigger }) {
             setUploading(true);
             setUploadError(false);
 
-            const res = await api.post(`${BackendUrl}/upload-multiple`, formData, {
+            const res = await api.post(`/api/upload/upload-multiple`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
 
             setImageUrls(res.data.urls);
             setUploadSuccess(true);
         } catch (err) {
-            console.error(err);
-            fileInputRef.current.value = ''; // Reset file input
-            setPreviews([]); // Clear previews
+            console.error(err.message);
+            fileInputRef.current.value = '';
+            setPreviews([]);
             setUploadSuccess(false);
             setUploadError(true);
         } finally {
@@ -51,7 +49,7 @@ export default function UploadMultipleImages({ setImageUrls, resetTrigger }) {
         setUploadSuccess(false);
         setPreviews(null);
         if (fileInputRef.current) {
-            fileInputRef.current.value = ''; // ✅ This resets the <input type="file" />
+            fileInputRef.current.value = '';
         }
 
     }, [resetTrigger])

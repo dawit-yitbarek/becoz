@@ -1,4 +1,3 @@
-// A component to wake the app every 5 minute
 import React from 'react';
 
 const Ping = () => {

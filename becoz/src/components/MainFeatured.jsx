@@ -3,8 +3,6 @@ import api from "../components/Api";
 import { useNavigate } from 'react-router-dom'
 import { SkeletonFeatured } from './SkeletonComponents'
 
-const BackendUrl = import.meta.env.VITE_BACKEND_URL;
-
 export default function MainFeatured() {
   const [mainFeatured, setMainFeatured] = useState({});
   const [restartFetch, setRestartFetch] = useState({ retry: 0, retryCount: 0 });
@@ -13,11 +11,11 @@ export default function MainFeatured() {
   useEffect(() => {
     const fetchFeaturedListings = async () => {
       try {
-        const response = await api.get(`${BackendUrl}/getFeaturedListing`);
+        const response = await api.get(`/api/properties/getFeaturedListing`);
         setMainFeatured(response.data[0]);
         setRestartFetch(() => ({ retry: 0, retryCount: 0 }));
       } catch (error) {
-        console.error("Error fetching featured listings:", error);
+        console.error("Error fetching featured listings:", error.message);
         if (restartFetch.retryCount < 5) {
           setTimeout(() => {
             setRestartFetch(prev => ({

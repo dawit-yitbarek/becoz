@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import api from '../components/Api';
-const BackendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export default function DeletePropertyModal({ property, onClose, refresh }) {
     const [deleting, setDeleting] = useState(false);
@@ -11,13 +10,13 @@ export default function DeletePropertyModal({ property, onClose, refresh }) {
         try {
             setDeleteError(false);
             setDeleting(true);
-            await api.delete(`${BackendUrl}/deleteProperty`, { params: { id: property.id } });
+            await api.delete(`/api/properties/deleteProperty`, { params: { id: property.id } });
             refresh();
             onClose();
         } catch (err) {
             setDeleteError(true);
-            console.error('Error deleting property:', err);
-        }finally {
+            console.error('Error deleting property:', err.message);
+        } finally {
             setDeleting(false);
         };
     };

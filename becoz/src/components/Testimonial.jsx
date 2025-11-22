@@ -3,8 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import api from '../components/Api'
 import { SkeletonTestimonial } from './SkeletonComponents'
 
-const BackendUrl = import.meta.env.VITE_BACKEND_URL
-
 export default function TestimonialSection() {
   const [testimonials, setTestimonials] = useState([])
   const [index, setIndex] = useState(0)
@@ -26,7 +24,7 @@ export default function TestimonialSection() {
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
-        const response = await api.get(`${BackendUrl}/getTestimonials`)
+        const response = await api.get(`/api/feedback/getTestimonials`)
         setTestimonials(response.data)
         setRestartFetch(() => ({ retry: 0, retryCount: 0 }));
       } catch (error) {

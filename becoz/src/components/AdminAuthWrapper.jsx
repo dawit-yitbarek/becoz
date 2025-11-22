@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Eye, EyeOff } from "lucide-react";
-import api from '../components/Api'; // axios instance
+import api from '../components/Api';
 import ShowPassword from './ShowPassword';
 
 export default function AdminAuthWrapper({ children }) {
@@ -11,13 +10,14 @@ export default function AdminAuthWrapper({ children }) {
   const [verifying, setVerifying] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  // ✅ Check if admin is already authenticated (via cookie)
+  // Check if admin is already authenticated
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await api.get('/check-admin-auth');
+        const res = await api.get('/api/admin/check-admin-auth');
         setIsVerified(res.data?.authenticated);
-      } catch {
+      } catch (err) {
+        console.error(err.message);
         setIsVerified(false);
       } finally {
         setChecking(false);
@@ -30,16 +30,17 @@ export default function AdminAuthWrapper({ children }) {
     try {
       setError('');
       setVerifying(true);
-      await api.post('/verify-admin', { password }); // backend sets 5-day cookie
+      await api.post('/api/admin/verify-admin', { password });
       setIsVerified(true);
     } catch (err) {
+      console.error(err.message);
       setError(err.response?.data?.message || 'Verification failed. Please try again.');
     } finally {
       setVerifying(false);
     }
   };
 
-  // ✅ While checking cookie-based auth
+
   if (checking) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0F0F0F] text-white">
@@ -48,10 +49,10 @@ export default function AdminAuthWrapper({ children }) {
     );
   }
 
-  // ✅ If authenticated
+  // If authenticated
   if (isVerified) return children;
 
-  // ✅ If not authenticated
+  // If not authenticated
   return (
     <div className="fixed inset-0 bg-[#0F0F0F] flex items-center justify-center overflow-hidden z-40">
       <div className="p-6 rounded-lg border border-[#FFCB74]/40 bg-[#1F1F1F] w-full max-w-sm">

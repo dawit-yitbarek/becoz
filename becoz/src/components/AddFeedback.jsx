@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import api from "./Api";
 
-const BackendUrl = import.meta.env.VITE_BACKEND_URL;
-
 export default function AddFeedback() {
     const [name, setName] = useState('');
     const [message, setMessage] = useState('');
@@ -17,13 +15,13 @@ export default function AddFeedback() {
             setSubmitSuccess(false);
             setSubmitting(true);
             const payload = { name, message };
-            await api.post(`${BackendUrl}/addFeedback`, payload);
+            await api.post(`/api/feedback/addFeedback`, payload);
             setName('');
             setMessage('');
             setSubmitSuccess(true);
         } catch (err) {
             setSubmitError(true);
-            console.error(err);
+            console.error(err.message);
         } finally {
             setSubmitting(false);
         }

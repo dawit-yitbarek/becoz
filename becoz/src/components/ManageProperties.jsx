@@ -5,7 +5,6 @@ import EditPropertyModal from './EditPropertyModal';
 import DeletePropertyModal from './DeletePropertyModal';
 import ChangeAdminPassword from './ChangeAdminPassword';
 import { SkeletonAdminProperties } from './SkeletonComponents'
-const BackendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export default function ManageProperties({ refreshOnAddProperty }) {
   const navigate = useNavigate();
@@ -20,11 +19,11 @@ export default function ManageProperties({ refreshOnAddProperty }) {
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const res = await api.get('/getProperties');
+        const res = await api.get('/api/properties/getProperties');
         setProperties(res.data);
         setRestartFetch(() => ({ retry: 0, retryCount: 0 }));
       } catch (err) {
-        console.error('Error fetching properties:', err);
+        console.error('Error fetching properties:', err.message);
         if (restartFetch.retryCount < 5) {
           setTimeout(() => {
             setRestartFetch(prev => ({
@@ -47,7 +46,7 @@ export default function ManageProperties({ refreshOnAddProperty }) {
     try {
       setLogoutError('');
       setLoading(true);
-      await api.post(`${BackendUrl}/admin-logout`);
+      await api.post(`/api/admin/admin-logout`);
       navigate('/');
     } catch (err) {
       setLogoutError('Failed to log out. Please try again.');

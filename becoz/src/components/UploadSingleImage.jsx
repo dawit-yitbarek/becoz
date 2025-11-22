@@ -1,8 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import api from './Api';
 
-const BackendUrl = import.meta.env.VITE_BACKEND_URL;
-
 export default function UploadSingleImage(props) {
   const [preview, setPreview] = useState(null);
   const [uploadSuccess, setUploadSuccess] = useState(false);
@@ -19,24 +17,24 @@ export default function UploadSingleImage(props) {
       return;
     }
 
-    setPreview(URL.createObjectURL(file)); // Show preview
+    setPreview(URL.createObjectURL(file));
     const formData = new FormData();
     formData.append('image', file);
 
     try {
       setUploadError(false);
       setUploading(true);
-      const res = await api.post(`${BackendUrl}/upload-single`, formData, {
+      const res = await api.post(`/api/upload/upload-single`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       props.setImageUrl(res.data.url); // Save Cloudinary URL
       setUploadSuccess(true);
     } catch (error) {
-      fileInputRef.current.value = ''; // Reset file input
-      setPreview(null); // Clear preview
+      fileInputRef.current.value = '';
+      setPreview(null);
       setUploadSuccess(false);
       setUploadError(true);
-      console.error('Error uploading image:', error);
+      console.error('Error uploading image:', error.message);
     } finally {
       setUploading(false);
     }
@@ -48,7 +46,7 @@ export default function UploadSingleImage(props) {
     setUploadSuccess(false);
     setPreview(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = ''; // ✅ This resets the <input type="file" />
+      fileInputRef.current.value = '';
     }
 
   }, [props.resetTrigger]);

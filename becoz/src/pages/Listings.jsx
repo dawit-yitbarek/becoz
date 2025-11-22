@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { motion, time } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import api from '../components/Api';
 import { format } from 'date-fns';
 import MainFeatured from '../components/MainFeatured';
 import { SkeletonListing } from '../components/SkeletonComponents';
-
-const BackendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export default function Listings() {
   const [allListings, setAllListings] = useState([]);
@@ -17,11 +15,11 @@ export default function Listings() {
   useEffect(() => {
     const getProperties = async () => {
       try {
-        const response = await api.get(`${BackendUrl}/getProperties`);
+        const response = await api.get(`/api/properties/getProperties`);
         setAllListings(response.data);
         setRestartFetch(() => ({ retry: 0, retryCount: 0 }));
       } catch (error) {
-        console.error("Error fetching properties:", error);
+        console.error("Error fetching properties:", error.message);
         if (restartFetch.retryCount < 5) {
           setTimeout(() => {
             setRestartFetch(prev => ({

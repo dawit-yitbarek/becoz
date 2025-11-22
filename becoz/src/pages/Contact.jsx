@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaTelegramPlane, FaTiktok, FaEnvelope, FaPhoneAlt, FaMapMarkerAlt, FaInstagram } from 'react-icons/fa';
+import { FaTelegramPlane, FaTiktok, FaEnvelope, FaPhoneAlt, FaInstagram } from 'react-icons/fa';
 import api from '../components/Api';
-const BackendUrl = import.meta.env.VITE_BACKEND_URL;
 
 
 export default function Contact() {
@@ -30,7 +29,7 @@ export default function Contact() {
     setSubmitError(false);
     setSubmitSuccess(false);
     try {
-      await api.post(`${BackendUrl}/sendMessage`, formData);
+      await api.post(`/api/email/sendMessage`, formData);
       setFormData({
         name: '',
         email: '',

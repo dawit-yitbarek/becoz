@@ -35,7 +35,7 @@ export default function ChangeAdminPassword() {
         try {
             setIsLoading(true);
             setError('');
-            const res = await api.post('/change-admin-password', {
+            const res = await api.post('/api/admin/change-admin-password', {
                 currentPassword: formData.currentPassword,
                 newPassword: formData.newPassword,
             });
@@ -47,6 +47,7 @@ export default function ChangeAdminPassword() {
                 confirmNewPassword: '',
             });
         } catch (err) {
+            console.error(err.message);
             setMessage('');
             setError(err.response?.data?.message || "Something went wrong");
         } finally {
