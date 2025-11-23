@@ -1,36 +1,44 @@
-import nodemailer from "nodemailer";
-import generateEmail from './emailTemplate.js';
+import Brevo from "@getbrevo/brevo";
+import generateEmail from "./emailTemplate.js";
 import dotenv from "dotenv";
 dotenv.config();
 
-const transporter = nodemailer.createTransport({
-    host: "smtp-relay.brevo.com",
-    port: 587,
-    secure: false,
-    auth: {
-        user: process.env.BREVO_USER,
-        pass: process.env.BREVO_SMTP_KEY
-    },
-});
+// Initialize Brevo API
+const apiInstance = new Brevo.TransactionalEmailsApi();
+apiInstance.setApiKey(
+    Brevo.TransactionalEmailsApiApiKeys.apiKey,
+    process.env.BREVO_API_KEY
+);
 
 export const sendEmail = async (req, res) => {
     const { name, email, phone, message } = req.body;
     const html = generateEmail({ name, email, phone, message });
 
     try {
-        await transporter.sendMail({
-            from: `"${name}" <${process.env.EMAIL_USER}>`,
-            to: process.env.BROKER_EMAIL,
-            replyTo: email,
-            subject: 'New Contact Message',
-            text: `Phone: ${phone}\n\nMessage:\n${message}`,
-            html: html,
+        await apiInstance.sendTransacEmail({
+            sender: {
+                name: name,
+                email: process.env.EMAIL_USER,
+            },
+            to: [
+                { email: process.env.BROKER_EMAIL }
+            ],
+            replyTo: { email },
+            subject: "New Contact Message",
+            htmlContent: html,
+            textContent: `Phone: ${phone}\n\nMessage:\n${message}`
         });
 
-        res.status(200).json({ success: true, message: 'Message sent successfully.' });
-        console.log('Contact form submitted successfully on /sendMessage endpoint');
+        console.log("Contact form submitted successfully on /sendMessage endpoint");
+        res.status(200).json({
+            success: true,
+            message: "Message sent successfully."
+        });
+
     } catch (error) {
-        console.error('Contact form error:', error.message);
-        res.status(500).json({ error: 'Something went wrong. Try again later.' });
+        console.error("Brevo API Error:", error.message);
+        res.status(500).json({
+            error: "Something went wrong. Try again later."
+        });
     }
 };
