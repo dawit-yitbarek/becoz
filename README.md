@@ -19,111 +19,124 @@ Becoz Rentals is a modern rental house listing platform featuring a clean UI, de
 - View user feedback  
 - Fully functioning admin panel for managing all listings  
 
+# Becoz — Rental Listings
+
+Becoz is a full-stack rental/property listing application with a React + Vite frontend and a Node.js + Express backend. It supports an admin panel (JWT auth) for managing properties, Cloudinary image uploads, feedback collection, and email notifications (Brevo).
+
+**Status:** development
+
 ---
 
-## 🛠️ Tech Stack
+**Table of contents**
+- [Features](#features)
+- [Tech stack](#tech-stack)
+- [Prerequisites](#prerequisites)
+- [Environment variables](#environment-variables)
+- [Local setup](#local-setup)
+- [API endpoints](#api-endpoints)
+- [Project structure](#project-structure)
+- [Deployment notes](#deployment-notes)
+- [Contributing](#contributing)
 
-### **Frontend**
-- React + Vite  
-- Tailwind CSS  
-- Axios  
+---
 
-### **Backend**
-- Node.js  
-- Express  
-- PostgreSQL  
-- Cloudinary  
-- Brevo (email service)  
-- JSON Web Tokens (JWT)
+## Features
 
+- User-facing property listings and detail pages
+- Admin panel with JWT-based authentication
+- Create / update / delete property listings
+- Image upload and management using Cloudinary
+- Feedback form and admin feedback viewer
+- Email sending via Brevo
 
-## 🗄️ Database Schema
+## Tech stack
 
-The backend uses PostgreSQL with the following tables:
+- Frontend: React, Vite, Tailwind CSS
+- Backend: Node.js, Express
+- Database: PostgreSQL (via `pg`)
+- Storage: Cloudinary (image uploads)
+- Email: Brevo (via `@getbrevo/brevo`)
 
-```sql
-CREATE TABLE public.admin
-(
-  id SERIAL PRIMARY KEY,
-  password TEXT
-);
+## Prerequisites
 
-CREATE TABLE IF NOT EXISTS public.feedback
-(
-  id SERIAL PRIMARY KEY,
-  comment TEXT NOT NULL,
-  author TEXT NOT NULL,
-  posted_at TIMESTAMP DEFAULT now()
-);
+- Node.js (>=16) and npm
+- PostgreSQL or a managed Postgres (connection string in `DATABASE_URL`)
+- Cloudinary account (for uploads)
+- Brevo (or another email provider) API key and verified sender
 
-CREATE TABLE IF NOT EXISTS public.properties
-(
-  id SERIAL PRIMARY KEY,
-  title TEXT NOT NULL,
-  description TEXT NOT NULL,
-  type TEXT NOT NULL,
-  price NUMERIC NOT NULL,
-  address TEXT NOT NULL,
-  features TEXT[] NOT NULL,
-  main_img TEXT NOT NULL,
-  img_collection TEXT[] NOT NULL,
-  posted_at TIMESTAMP DEFAULT now()
-);
+## Environment variables
 
-⚙️ Installation & Setup
+Create a `.env` file in the `backend` folder with the following variables (example names used in code):
 
-Clone the repository and install dependencies for both the frontend and backend:
+- `DATABASE_URL` — PostgreSQL connection string (include SSL if required)
+- `FRONTEND_URL` — front-end origin (for CORS)
+- `BACKEND_URL` — backend origin (optional)
+- `CLOUDINARY_CLOUD_NAME` — Cloudinary cloud name
+- `CLOUDINARY_API_KEY` — Cloudinary API key
+- `CLOUDINARY_API_SECRET` — Cloudinary API secret
+- `JWT_SECRET` — secret used to sign admin JWTs
+- `EMAIL_USER` — sender email (Brevo-verified)
+- `BREVO_API_KEY` — Brevo API key
+- `BROKER_EMAIL` — email to receive contact messages
+- `PORT` — backend port (e.g. `5000`)
 
-git clone https://github.com/dawit-yitbarek/becoz.git
-cd becoz
+Frontend environment variables (create `.env` in the `becoz` folder):
 
-📦 Backend Setup
-cd backend
+- `VITE_BACKEND_URL` — URL of the backend (e.g. `http://localhost:5000`)
+- `VITE_FRONTEND_URL` — frontend public URL (optional)
+
+## Local setup
+
+Open two terminals (backend and frontend). Use PowerShell on Windows.
+
+Backend:
+
+```powershell
+cd c:\Users\user\Desktop\Cli\becoz-main\backend
 npm install
-
-Create a .env file in /backend:
-
-DATABASE_URL=your_database_url
-FRONTEND_URL=your_frontend_url
-BACKEND_URL=your_backend_url
-CLOUDINARY_CLOUD_NAME=your_cloudinary_name
-CLOUDINARY_API_KEY=your_cloudinary_key
-CLOUDINARY_API_SECRET=your_cloudinary_secret
-JWT_SECRET=your_jwt_secret
-EMAIL_USER=your_brevo_verified_email
-BREVO_API_KEY=your_brevo_api_key
-BROKER_EMAIL=email_to_receive_contact_messages
-PORT=port_number
-
-Run the backend:
-node ./src/server.js
-
-💻 Frontend Setup
-cd frontend
-npm install
-
-Create a .env file in /frontend:
-
-VITE_BACKEND_URL=your_backend_url
-VITE_FRONTEND_URL=your_frontend_url
-
-Run the frontend:
+# create .env with the variables above
 npm run dev
+```
 
-🌐 Deployment
+Frontend:
 
-The app is deployed at:
-https://becoz.vercel.app
+```powershell
+cd c:\Users\user\Desktop\Cli\becoz-main\becoz
+npm install
+npm run dev
+```
 
+Health check (backend):
 
-📌 Future Improvements
+```powershell
+# when backend is running
+curl http://localhost:PORT/health
+```
 
-Add property favorites
+## API endpoints
 
-Add user accounts for normal users
+The backend exposes the following routes (mounted under `/api`):
 
-Add pagination
+- `GET /health` — health check
+- `POST /api/admin` and related admin routes — admin authentication and management
+- `GET/POST/PUT/DELETE /api/properties` — property CRUD
+- `GET/POST /api/feedback` — submit and view feedback
+- `POST /api/upload` — image upload endpoints (Cloudinary)
+- `POST /api/email` — send email/contact messages
 
-Add map integration (Google Maps or Leaflet)
+Check the `backend/src/routes` folder for full route details.
 
-Improve admin analytics dashboard
+## Project structure
+
+- `backend/` — Express backend
+  - `src/routes/` — route definitions (`adminRoute.js`, `propertiesRoute.js`, etc.)
+  - `src/controllers/` — request handlers
+  - `src/config/db.js` — Postgres connection (uses `DATABASE_URL`)
+  - `src/models/` — Cloudinary helper
+- `becoz/` — React + Vite frontend (Tailwind)
+
+## Deployment notes
+
+- The frontend is built with Vite and can be deployed to Vercel or Netlify.
+- The backend requires a Node environment and a Postgres database (ensure `DATABASE_URL` and SSL settings are correct). Managed hosts such as Render, Heroku, or Fly work well.
+- Keep secrets out of the repo; use platform environment variables in production.
